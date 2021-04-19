@@ -1,6 +1,7 @@
 const dateInput = document.querySelector("#date")
 const selectedDate = new Date(dateInput.value)
 const todoInput = document.querySelector("#todo-input")
+const span = document.querySelector("#span1")
 
 
 document.querySelector("#prev").addEventListener("click", function () {
@@ -16,7 +17,7 @@ document.querySelector("#next").addEventListener("click", function () {
 })
 
 document.querySelector("#add").addEventListener("click", function () {
-  if(todoInput.value){
+  if (todoInput.value) {
     addRow(todoInput.value)
   }
 })
@@ -35,12 +36,25 @@ function addRow(content) {
   div.className = 'row';
 
   div.innerHTML = `
-  <li>
-  <input type="checkbox" value="Something">
-  <div>${content}</div>
-  <span>❌</span>
+  <li id="li1">
+  <input type="checkbox" value="Something" id="checkbox1">
+  <div id="content1">${content}</div>
+  <span id="span1">❌</span>
   </li>
   `;
 
   document.querySelector("#todos").appendChild(div);
+
+  document.querySelector("#checkbox1").addEventListener('change', function () {
+    if (this.checked) {
+      document.querySelector("#content1").innerHTML = "Ok!"
+    } else {
+      document.querySelector("#content1").innerHTML = "Not Ok!"
+    }
+  })
+
+  document.querySelector("#span1").addEventListener('click', function () {
+    console.log("")
+    document.querySelector("#li1").innerHTML = ""
+  })
 }
