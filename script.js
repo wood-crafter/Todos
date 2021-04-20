@@ -36,25 +36,35 @@ function addRow(content) {
   div.className = 'row';
 
   div.innerHTML = `
-  <li id="li1">
-  <input type="checkbox" value="Something" id="checkbox1">
-  <div id="content1">${content}</div>
-  <span id="span1">❌</span>
-  </li>
+  <li class="todo">
+    <input type="checkbox" value="Something" class="checkbox">
+    <div class="content">${content}</div>
+    <span class="span">❌</span>
+    </li>
   `;
 
   document.querySelector("#todos").appendChild(div);
 
-  document.querySelector("#checkbox1").addEventListener('change', function () {
-    if (this.checked) {
-      document.querySelector("#content1").innerHTML = "Ok!"
-    } else {
-      document.querySelector("#content1").innerHTML = "Not Ok!"
-    }
-  })
+  const todos = document.querySelectorAll(".todo")
 
-  document.querySelector("#span1").addEventListener('click', function () {
-    console.log("")
-    document.querySelector("#li1").innerHTML = ""
-  })
+  for (  let i = 0; i < todos.length; i++) {
+    addCheckboxEventListener(todos[i])
+    addSpanEventListener(todos[i])
+  }
+
+  function addCheckboxEventListener(todo) {
+    todo.querySelector(".checkbox").addEventListener('change', function () {
+      if (this.checked) {
+        todo.querySelector(".content").style.textDecoration = "line-through"
+      } else {
+        todo.querySelector(".content").style.textDecoration = "none"
+      }
+    })
+  }
+
+  function addSpanEventListener(todo) {
+    todo.querySelector(".span").addEventListener('click', function () {
+      todo.innerHTML = ""
+    })
+  }
 }
