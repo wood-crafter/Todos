@@ -36,21 +36,17 @@ function addRow(content) {
   div.className = 'row';
 
   div.innerHTML = `
-  <li class="todo">
-    <input type="checkbox" value="Something" class="checkbox">
-    <div class="content">${content}</div>
-    <span class="span">❌</span>
+    <li class="todo">
+      <input type="checkbox" value="Something" class="checkbox">
+      <div class="content">${content}</div>
+      <span class="span">❌</span>
     </li>
   `;
 
   document.querySelector("#todos").appendChild(div);
 
-  const todos = document.querySelectorAll(".todo")
-
-  for (  let i = 0; i < todos.length; i++) {
-    addCheckboxEventListener(todos[i])
-    addSpanEventListener(todos[i])
-  }
+  addCheckboxEventListener(div)
+  addSpanEventListener(div)
 
   function addCheckboxEventListener(todo) {
     todo.querySelector(".checkbox").addEventListener('change', function () {
@@ -64,7 +60,7 @@ function addRow(content) {
 
   function addSpanEventListener(todo) {
     todo.querySelector(".span").addEventListener('click', function () {
-      todo.innerHTML = ""
+      todo.parentNode.removeChild(todo)
     })
   }
 }
