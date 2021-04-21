@@ -38,14 +38,11 @@ document.querySelector("#add").addEventListener("click", function () {
   }
 })
 
-function removeTodo(todo) {
+function removeTodo(id) {
   //remove not available records
-  for (let i = 0; i < todos.length; i++) {
-    if (todos[i].id == todo.id) {
-      todos.splice(i, 1)
-      return
-    }
-  }
+  todos.filter((todo) => {
+    return todo.id != id
+  })
 }
 
 function removeAllRecord() {
@@ -133,7 +130,7 @@ function addRow(todo) {
     div.querySelector(".span").addEventListener('click', (e) => {
       removeTodo(todos.find((thisTodo) => {
         return thisTodo.id === todo.id
-      }))
+      }).id)
       div.parentNode.removeChild(div)
     })
   }
