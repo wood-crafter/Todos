@@ -2,6 +2,8 @@ const dateInput = document.querySelector("#date")
 const selectedDate = new Date(dateInput.value)
 const todoInput = document.querySelector("#todo-input")
 const span = document.querySelector("#span1")
+const todos = []
+let todoId = 1
 
 
 document.querySelector("#prev").addEventListener("click", function () {
@@ -18,9 +20,51 @@ document.querySelector("#next").addEventListener("click", function () {
 
 document.querySelector("#add").addEventListener("click", function () {
   if (todoInput.value) {
-    addRow(todoInput.value)
+    const nextTodo = { id: todoId, dateCreate: new Date(dateInput.value), content: todoInput.value, isDone: false }
+    todoId += 1
+
+    todos.push(nextTodo)
+
+    //sort todos by dateCreate
+    if (todos.length > 1) {
+      todos.sort((thisTodo, nextTodo) => {
+        return thisTodo.dateCreate - nextTodo.dateCreate;
+      });
+    }
+
+    removeAllRecord()
+
+    addAllTodos()
   }
 })
+
+function removeTodo(id) {
+  //remove not available records
+  todos.filter((todo) => {
+    return todo.id != id
+  })
+}
+
+function removeAllRecord() {
+  while (document.querySelector("#todos").firstChild) {
+    document.querySelector("#todos").firstChild.remove()
+  }
+}
+
+function addAllTodos() {
+  //Add not done todos
+  for (let i = 0; i < todos.length; i++) {
+    if (!todos[i].isDone) {
+      addRow(todos[i])
+    }
+  }
+  //Add done todos
+  for (let i = 0; i < todos.length; i++) {
+    if (todos[i].isDone) {
+      addRow(todos[i])
+    }
+  }
+}
 
 function formatDate(date) {
   const year = date.getFullYear().toString().padStart(4, '0')
@@ -30,37 +74,66 @@ function formatDate(date) {
   return `${year}-${month}-${dateStr}`
 }
 
-function addRow(content) {
+function addRow(todo) {
   const div = document.createElement('div');
 
   div.className = 'row';
 
-  div.innerHTML = `
+  if (todo.isDone) {
+    div.innerHTML = `
     <li class="todo">
-      <input type="checkbox" value="Something" class="checkbox">
-      <div class="content">${content}</div>
+      <input type="checkbox" value="Something" class="checkbox" checked>
+      <div class="content">${todo.content}</div>
       <span class="span">❌</span>
     </li>
-  `;
+  `
+  } else {
+    div.innerHTML = `
+    <li class="todo">
+      <input type="checkbox" value="Something" class="checkbox">
+      <div class="content">${todo.content}</div>
+      <span class="span">❌</span>
+    </li>
+  `
+  }
 
   document.querySelector("#todos").appendChild(div);
 
-  addCheckboxEventListener(div)
-  addSpanEventListener(div)
+  if (todo.isDone) {
+    div.querySelector(".content").style.textDecoration = "line-through"
+  } else {
+    div.querySelector(".content").style.textDecoration = "none"
+  }
 
-  function addCheckboxEventListener(todo) {
-    todo.querySelector(".checkbox").addEventListener('change', function () {
-      if (this.checked) {
-        todo.querySelector(".content").style.textDecoration = "line-through"
+  addCheckboxEventListener(div, todo)
+  addSpanEventListener(div, todo)
+
+  function addCheckboxEventListener(div, todo) {
+    div.querySelector(".checkbox").addEventListener('change', (e) => {
+      if (e.target.checked) {
+        todos.find((thisTodo) => {
+          return thisTodo.id === todo.id
+        }).isDone = true
+        removeAllRecord()
+        addAllTodos()
       } else {
-        todo.querySelector(".content").style.textDecoration = "none"
+        todos.find((thisTodo) => {
+          return thisTodo.id === todo.id
+        }).isDone = false
+        removeAllRecord()
+        addAllTodos()
       }
     })
   }
 
-  function addSpanEventListener(todo) {
-    todo.querySelector(".span").addEventListener('click', function () {
-      todo.parentNode.removeChild(todo)
+  function addSpanEventListener(div, todo) {
+    div.querySelector(".span").addEventListener('click', (e) => {
+      removeTodo(todos.find((thisTodo) => {
+        return thisTodo.id === todo.id
+      }).id)
+      div.parentNode.removeChild(div)
     })
   }
 }
+
+//Đường dẫn trực gián!
