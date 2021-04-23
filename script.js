@@ -2,8 +2,20 @@ const dateInput = document.querySelector("#date")
 const selectedDate = new Date(dateInput.value)
 const todoInput = document.querySelector("#todo-input")
 const span = document.querySelector("#span1")
-const todos = []
 let todoId = 1
+let todos = []
+const storedTodos = JSON.parse(localStorage.getItem('todos'))
+if (storedTodos !== null) {
+  for (let i = 0; i < storedTodos.length; i++) {
+    todos.push(storedTodos[i])
+    if (todos[i].id > todoId) {
+      todoId = todos[i] + 1
+    }
+  }
+}
+
+addAllTodos()
+
 
 
 document.querySelector("#prev").addEventListener("click", function () {
@@ -31,7 +43,9 @@ document.querySelector("#add").addEventListener("click", function () {
         return thisTodo.dateCreate - nextTodo.dateCreate;
       });
     }
-
+    //stringify todos
+    const todosJSON = JSON.stringify(todos)
+    localStorage.setItem('todos', todosJSON)
     removeAllRecord()
 
     addAllTodos()
@@ -40,7 +54,7 @@ document.querySelector("#add").addEventListener("click", function () {
 
 function removeTodo(id) {
   //remove not available records
-  todos.filter((todo) => {
+  todos = todos.filter((todo) => {
     return todo.id != id
   })
 }
@@ -114,12 +128,21 @@ function addRow(todo) {
         todos.find((thisTodo) => {
           return thisTodo.id === todo.id
         }).isDone = true
+        //stringify todos
+        const todosJSON = JSON.stringify(todos)
+        localStorage.setItem('todos', todosJSON)
+
         removeAllRecord()
         addAllTodos()
       } else {
         todos.find((thisTodo) => {
           return thisTodo.id === todo.id
         }).isDone = false
+
+        //stringify todos
+        const todosJSON = JSON.stringify(todos)
+        localStorage.setItem('todos', todosJSON)
+
         removeAllRecord()
         addAllTodos()
       }
@@ -131,9 +154,12 @@ function addRow(todo) {
       removeTodo(todos.find((thisTodo) => {
         return thisTodo.id === todo.id
       }).id)
+
+      //stringify todos
+      const todosJSON = JSON.stringify(todos)
+      localStorage.setItem('todos', todosJSON)
+
       div.parentNode.removeChild(div)
     })
   }
 }
-
-//Đường dẫn trực gián!
